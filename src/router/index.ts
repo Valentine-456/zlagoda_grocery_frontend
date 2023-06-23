@@ -25,6 +25,10 @@ const router = createRouter({
         {
           path: 'category',
           component: () => import('../components/CategoryEditor/CategoryEditor.vue')
+        },
+        {
+          path: 'product',
+          component: () => import('../components/ProductEditor/ProductEditor.vue')
         }
       ]
     },
