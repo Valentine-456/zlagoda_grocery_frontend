@@ -1,21 +1,20 @@
 <template>
   <main class="d-flex bg-surface-variant">
-    
     <div class="sheet-block bg-green-darken-1">
-      <LoginForm message="Login as cashier"/>
+      <LoginForm message="Login as cashier" />
     </div>
     <div class="sheet-block bg-grey-lighten-2">
       <v-card class="greeting-text bg-grey-lighten-2 elevation-0" width="380">
         <v-card-item>
-        <v-card-title class="text-h4 font-weight-bold pa-5">Zlagoda grocery</v-card-title>
-      </v-card-item>
-      <v-divider :thickness="2"></v-divider>
+          <v-card-title class="text-h4 font-weight-bold pa-5">Zlagoda grocery</v-card-title>
+        </v-card-item>
+        <v-divider :thickness="2"></v-divider>
 
-      <v-card-text class="text-subtitle-1">
-        Welcome to 'Zlagoda' grocery admin panel. <br>
-        If you want login as a cashier of the shop 
-        <RouterLink to="/">click here</RouterLink>.
-      </v-card-text>
+        <v-card-text class="text-subtitle-1">
+          Welcome to 'Zlagoda' grocery admin panel. <br />
+          If you want login as a cashier of the shop
+          <RouterLink to="/">click here</RouterLink>.
+        </v-card-text>
       </v-card>
     </div>
   </main>
@@ -23,7 +22,7 @@
 
 <script lang="ts">
 import LoginForm from '../components/LoginForm.vue'
-import {RouterLink} from "vue-router"
+import { RouterLink } from 'vue-router'
 
 export default {
   data() {
@@ -31,15 +30,15 @@ export default {
       count: 0
     }
   },
-  components:  {
-    LoginForm,
+  components: {
+    LoginForm
   }
 }
 </script>
 <style>
 main {
   width: 100vw;
-  height:100vh;
+  height: 100vh;
   position: relative;
   box-sizing: border-box;
   padding: 0;
@@ -57,7 +56,7 @@ main {
 
 .sheet-block {
   width: 50vw;
-  height:100vh;
+  height: 100vh;
   position: relative;
   box-sizing: border-box;
   padding: 0;
@@ -68,7 +67,7 @@ main {
 .login-form {
   position: absolute;
   top: 50%;
-  left:50%;
+  left: 50%;
   transform: translate(-20%, -50%);
 }
 </style>

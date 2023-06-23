@@ -16,13 +16,23 @@ const router = createRouter({
     {
       path: '/dashboard-manager',
       name: 'Manager - Dashboard',
-      component: () => import('../views/ManagerDashboard.vue')
+      component: () => import('../views/ManagerDashboard.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('../components/MyProfile.vue')
+        },
+        {
+          path: 'category',
+          component: () => import('../components/CategoryEditor/CategoryEditor.vue')
+        }
+      ]
     },
     {
       path: '/dashboard-cashier',
       name: 'Cashier - Dashboard',
       component: () => import('../views/CashierDashboard.vue')
-    },
+    }
   ]
 })
 
