@@ -37,6 +37,10 @@ const router = createRouter({
         {
           path: 'customer-card',
           component: () => import('../components/CustomerCardEditor/CustomerCardEditor.vue')
+        },
+        {
+          path: 'employee',
+          component: () => import('../components/EmployeeEditor/EmployeeEditor.vue')
         }
       ]
     },

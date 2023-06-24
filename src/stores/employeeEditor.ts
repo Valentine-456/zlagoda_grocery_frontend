@@ -1,30 +1,36 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { defineStore } from 'pinia'
-export interface CustomerCardDTO {
-  card_number: string
-  cust_name: string
-  cust_surname: string
-  cust_patronimic: string | null
+export interface EmployeeDTO {
+  id_employee: string
+  empl_name: string
+  empl_surname: string
+  empl_patronimic?: string
+  empl_role: string
+  salary: number
+  date_of_birth: string
+  date_of_start: string
   phone_number: string
-  city: string | null
-  street: string | null
-  zip_code: string | null
-  percent: number
-  card_numberParameter?: string // isMadeOnlyFor PATCH requests
+  city: string
+  street: string
+  zip_code: string
+  pass: string | null
 }
 
-export const useCustomerCardEditorStore = defineStore('customerCardEditorStore', {
+export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
   state: () => ({
     isCreateDialogOpen: false,
     isDeleteDialogOpen: false,
     isUpdateDialogOpen: false,
-    chosenItem: {} as CustomerCardDTO,
-    customerCards: [] as Array<CustomerCardDTO>
+    chosenItem: {} as EmployeeDTO,
+    employees: [] as Array<EmployeeDTO>
   }),
   getters: {},
   actions: {
-    async getAll(jwt_token: string, sort: string): Promise<boolean> {
-      let url = 'http://127.0.0.1:3000/customer-card'
+    async getAll(jwt_token: string, sort: string, roleFilter: string = 'Any'): Promise<boolean> {
+      let url = 'http://127.0.0.1:3000/employee'
+      if (roleFilter != 'Any') {
+        url += `/position/${roleFilter}`
+      }
       if (sort.length > 0) {
         url += `?sortBy=${sort}`
       }
@@ -36,10 +42,10 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
           }
         })
         if (response.ok) {
-          const data: Array<CustomerCardDTO> = await response.json()
-          this.customerCards = data.map((item) => ({
+          const data: Array<EmployeeDTO> = await response.json()
+          this.employees = data.map((item) => ({
             ...item,
-            card_numberParameter: item.card_number
+            salary: parseFloat(item.salary.toString())
           }))
           return true
         }
@@ -49,8 +55,8 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
         return false
       }
     },
-    async create(jwt_token: string, customerCard: CustomerCardDTO): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/customer-card'
+    async create(jwt_token: string, employee: EmployeeDTO): Promise<boolean> {
+      const url = 'http://127.0.0.1:3000/employee'
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -58,7 +64,7 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwt_token}`
           },
-          body: JSON.stringify(customerCard)
+          body: JSON.stringify(employee)
         })
         if (response.ok) {
           return true
@@ -69,8 +75,8 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
         return false
       }
     },
-    async delete(jwt_token: string, cardNumber: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/customer-card/${cardNumber}`
+    async delete(jwt_token: string, id_employee: string): Promise<boolean> {
+      const url = `http://127.0.0.1:3000/employee/${id_employee}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -88,8 +94,8 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
         return false
       }
     },
-    async update(jwt_token: string, customerCard: CustomerCardDTO): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/customer-card/${customerCard.card_numberParameter}`
+    async update(jwt_token: string, employee: EmployeeDTO): Promise<boolean> {
+      const url = `http://127.0.0.1:3000/employee/${employee.id_employee}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -99,8 +105,8 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
             Authorization: `Bearer ${jwt_token}`
           },
           body: JSON.stringify({
-            ...customerCard
-          } as CustomerCardDTO)
+            ...employee
+          } as EmployeeDTO)
         })
         if (response.ok) {
           return true
