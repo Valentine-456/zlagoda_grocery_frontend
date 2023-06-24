@@ -33,6 +33,10 @@ const router = createRouter({
         {
           path: 'store-product',
           component: () => import('../components/StoreProductEditor/StoreProductEditor.vue')
+        },
+        {
+          path: 'customer-card',
+          component: () => import('../components/CustomerCardEditor/CustomerCardEditor.vue')
         }
       ]
     },
