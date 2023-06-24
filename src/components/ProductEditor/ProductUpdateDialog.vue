@@ -30,26 +30,31 @@
 </template>
 <script lang="ts">
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { useCategoryEditorStore } from '@/stores/categoryEditor'
+import { useCategoryEditorStore, type CategoryDTO } from '@/stores/categoryEditor'
 import { useLoginStore } from '@/stores/login'
 import { useProductEditorStore, type ProductDTO } from '@/stores/productEditor'
 
 export default {
-  data: () => ({}),
+  data: () => ({
+    categoryChosen: {
+      category_number: 0,
+      category_name: ''
+    } as CategoryDTO
+  }),
   computed: {
     ...mapWritableState(useProductEditorStore, ['isUpdateDialogOpen', 'chosenItem']),
     ...mapState(useLoginStore, ['jwt_token']),
-    ...mapState(useCategoryEditorStore, ['categories']),
-    categoryChosen() {
-      return this.categories.find((el) => el.category_number == this.chosenItem.category_number)
-    }
+    ...mapState(useCategoryEditorStore, ['categories'])
   },
   methods: {
     ...mapActions(useProductEditorStore, ['update']),
     async updateRequest() {
       let formIsNotCompleted = this.chosenItem.category_name.length == 0
       if (formIsNotCompleted) return
-      const isOk = await this.update(this.jwt_token, this.chosenItem)
+      const isOk = await this.update(this.jwt_token, {
+        ...this.chosenItem,
+        category_number: this.categoryChosen.category_number
+      })
       if (isOk) this.closeDialog()
       else {
         alert('The error happened')

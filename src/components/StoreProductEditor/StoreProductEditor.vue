@@ -1,10 +1,10 @@
 <template>
-  <ProductCreateDialog />
-  <ProductDeleteDialog />
-  <ProductUpdateDialog />
+  <StoreProductCreateDialog />
+  <StoreProductDeleteDialog />
+  <StoreProductUpdateDialog />
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
-      <v-card-title class="text-h4 font-weight-bold">Product</v-card-title>
+      <v-card-title class="text-h4 font-weight-bold">Store Product</v-card-title>
       <v-card-actions class="d-flex">
         <v-select
           v-model="sortBy"
@@ -12,13 +12,6 @@
           class="sort-by"
           :items="sortOptions"
           label="Sort By"
-        ></v-select>
-        <v-select
-          v-model="categoryFilter"
-          density="compact"
-          class="sort-by"
-          :items="categoryFilterOptions"
-          label="Category Filter"
         ></v-select>
         <v-btn @click="search" size="large" class="mb-5 mt-0 mx-5 bg-blue">Search</v-btn>
         <v-btn @click="create" size="large" class="mb-5 mt-0 bg-green">Create New</v-btn>
@@ -28,19 +21,23 @@
     <v-table :height="tableHeight" hover fixed-header density="compact" class="data-table mt-5">
       <thead>
         <tr>
-          <th>Number</th>
+          <th>UPC</th>
           <th>Name</th>
-          <th>Category</th>
+          <th>Quantity</th>
           <th>Characteristics</th>
+          <th>Promotional</th>
+          <th>Price</th>
           <th>Options</th>
         </tr>
       </thead>
-      <tbody v-if="products.length != 0">
-        <tr v-for="item in products" :key="item.id_product">
-          <td>{{ item.id_product }}</td>
+      <tbody v-if="storeProducts.length != 0">
+        <tr v-for="item in storeProducts" :key="item.upc">
+          <td>{{ item.upc }}</td>
           <td>{{ item.product_name }}</td>
-          <td>{{ item.category_name }}</td>
+          <td>{{ item.products_nubmer }}</td>
           <td>{{ item.charachteristics }}</td>
+          <td>{{ item.promotional_product }}</td>
+          <td>{{ item.selling_price }}</td>
           <td>
             <v-btn size="small" @click="updateRequest(item)" class="bg-orange">Update</v-btn>
             <v-btn size="small" @click="deleteRequest(item)" class="bg-red">Delete</v-btn>
@@ -52,64 +49,63 @@
 </template>
 <script lang="ts">
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { useProductEditorStore, type ProductDTO } from '@/stores/productEditor'
+import { useProductEditorStore } from '@/stores/productEditor'
 import { useLoginStore } from '@/stores/login'
-import { useCategoryEditorStore } from '@/stores/categoryEditor'
-import ProductCreateDialog from '@/components/ProductEditor/ProductCreateDialog.vue'
-import ProductDeleteDialog from './ProductDeleteDialog.vue'
-import ProductUpdateDialog from './ProductUpdateDialog.vue'
+import {
+  useStoreProductEditorStore,
+  type StoreProductExtendedDTO,
+  type StoreProductDTO
+} from '@/stores/storeProductEditor'
+import StoreProductCreateDialog from '@/components/StoreProductEditor/StoreProductCreateDialog.vue'
+import StoreProductDeleteDialog from './StoreProductDeleteDialog.vue'
+import StoreProductUpdateDialog from './StoreProductUpdateDialog.vue'
 
 export default {
   components: {
-    ProductCreateDialog,
-    ProductDeleteDialog,
-    ProductUpdateDialog
+    StoreProductCreateDialog,
+    StoreProductDeleteDialog,
+    StoreProductUpdateDialog
   },
   mounted() {
-    this.getAllCategories(this.jwt_token, '')
+    this.getAllProducts(this.jwt_token, 'product_name')
   },
   data() {
     return {
       sortBy: '',
-      sortOptions: ['category_name', 'product_name', ''],
-      categoryFilter: 'Any'
+      sortOptions: ['products_nubmer', 'product_name', 'selling_price', '']
     }
   },
   computed: {
-    ...mapWritableState(useProductEditorStore, [
+    ...mapWritableState(useStoreProductEditorStore, [
       'isCreateDialogOpen',
       'chosenItem',
       'isDeleteDialogOpen',
       'isUpdateDialogOpen'
     ]),
-    ...mapState(useProductEditorStore, ['products']),
     ...mapState(useLoginStore, ['jwt_token']),
-    ...mapState(useCategoryEditorStore, ['categories']),
+    ...mapState(useStoreProductEditorStore, ['storeProducts']),
     tableHeight() {
       return window.innerHeight * 0.5
-    },
-    categoryFilterOptions() {
-      return ['Any'].concat(this.categories.map((cat) => cat.category_name))
     }
   },
   methods: {
-    ...mapActions(useProductEditorStore, ['getAll']),
-    ...mapActions(useCategoryEditorStore, {
-      getAllCategories: 'getAll'
+    ...mapActions(useStoreProductEditorStore, ['getAll']),
+    ...mapActions(useProductEditorStore, {
+      getAllProducts: 'getAll'
     }),
     async search() {
       let isOk: boolean
-      isOk = await this.getAll(this.jwt_token, this.sortBy, this.categoryFilter)
+      isOk = await this.getAll(this.jwt_token, this.sortBy)
       if (!isOk) alert('The error happened')
     },
     create() {
       this.isCreateDialogOpen = true
     },
-    deleteRequest(item: ProductDTO) {
+    deleteRequest(item: StoreProductExtendedDTO) {
       this.chosenItem = item
       this.isDeleteDialogOpen = true
     },
-    updateRequest(item: ProductDTO) {
+    updateRequest(item: StoreProductExtendedDTO) {
       this.chosenItem = { ...item }
       this.isUpdateDialogOpen = true
     }
