@@ -1,38 +1,46 @@
 <template>
-  <!-- <EmployeeCreateDialog />-->
+  <CheckGetTotalSumDialog />
   <CheckDeleteDialog />
   <CheckGetOneDialog />
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
       <v-card-title class="text-h4 font-weight-bold">Check</v-card-title>
-      <!-- <v-card-action class="d-flex">
-          <v-text-field
-            v-model="findBySurname"
-            density="compact"
-            class="find-one"
-            label="Surname"
-          ></v-text-field>
-          <v-btn @click="findBySurnameRequest" size="large" class="mb-5 mt-0 mx-5 bg-blue"
-            >Search by Surname</v-btn
-          >
-        </v-card-action> -->
+      <v-card-action class="d-flex">
+        <v-expansion-panels class="my-5">
+          <v-expansion-panel title="Advanced search">
+            <v-expansion-panel-text class="advance-search-bar">
+              <div class="d-flex">
+                <v-text-field
+                  v-model="dateFrom"
+                  class="sort-by"
+                  label="Start date"
+                  type="date"
+                ></v-text-field>
+                <v-text-field
+                  v-model="dateTo"
+                  class="sort-by"
+                  label="End date"
+                  type="date"
+                ></v-text-field>
+                <v-select
+                  v-model="chosenIdEmployeeFilter"
+                  class="sort-by"
+                  label="Select"
+                  :items="idEmployeeFilter"
+                ></v-select>
+              </div>
+              <v-btn size="large" @click="searchWithinDates" class="mb-5 mt-0 mx-5 bg-blue"
+                >Advanced Search</v-btn
+              >
+              <v-btn size="large" @click="sumWithinDatesRequest" class="mb-5 mt-0 mx-5 bg-green"
+                >Get Sum of Checks</v-btn
+              >
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-card-action>
       <v-card-actions class="d-flex">
-        <!-- <v-select
-            v-model="sortBy"
-            density="compact"
-            class="sort-by"
-            :items="sortOptions"
-            label="Sort By"
-          ></v-select>
-          <v-select
-            v-model="roleFilter"
-            density="compact"
-            class="sort-by"
-            :items="roleFilterOptions"
-            label="Role Filter"
-          ></v-select> -->
         <v-btn @click="search" size="large" class="mb-5 mt-0 mx-5 bg-blue">Search</v-btn>
-        <!-- <v-btn @click="create" size="large" class="mb-5 mt-0 bg-green"></v-btn> -->
       </v-card-actions>
     </v-card>
 
@@ -69,41 +77,62 @@
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { useLoginStore } from '@/stores/login'
 import { useCheckEditorStore, type CheckDTO } from '@/stores/checkEditor'
-//   import { useEmployeeEditorStore, type EmployeeDTO } from '@/stores/employeeEditor'
-//   import EmployeeCreateDialog from './EmployeeCreateDialog.vue'
+import CheckGetTotalSumDialog from './CheckGetTotalSumDialog.vue'
 import CheckDeleteDialog from './CheckDeleteDialog.vue'
 import CheckGetOneDialog from './CheckGetOneDialog.vue'
+import { useEmployeeEditorStore } from '@/stores/employeeEditor'
 
 export default {
   components: {
-    //   EmployeeCreateDialog,
-    //   EmployeeDeleteDialog,
+    CheckGetTotalSumDialog,
     CheckDeleteDialog,
     CheckGetOneDialog
   },
+  mounted() {
+    this.getAllEmployees(this.jwt_token, '', 'CASHIER')
+  },
   data() {
     return {
-      // sortBy: '',
-      // sortOptions: ['empl_surname', 'salary', ''],
-      // roleFilterOptions: ['Any', 'MANAGER', 'CASHIER'],
-      // roleFilter: 'Any',
-      // findBySurname: ''
+      chosenIdEmployeeFilter: '-',
+      dateFrom: new Date(Date.now() - 86_400_000)
+        .toLocaleString('en-GB', { month: '2-digit', day: '2-digit', year: 'numeric' })
+        .split('/')
+        .reverse()
+        .join('-'),
+      dateTo: new Date()
+        .toLocaleString('en-GB', { month: '2-digit', day: '2-digit', year: 'numeric' })
+        .split('/')
+        .reverse()
+        .join('-')
     }
   },
   computed: {
     ...mapWritableState(useCheckEditorStore, [
       'chosenItem',
       'isDeleteDialogOpen',
-      'isGetOneDialogOpen'
+      'isGetOneDialogOpen',
+      'isGetStatisticsDialogOpen'
     ]),
     ...mapState(useCheckEditorStore, ['checks']),
     ...mapState(useLoginStore, ['jwt_token']),
+    ...mapState(useEmployeeEditorStore, ['employees']),
     tableHeight() {
       return window.innerHeight * 0.5
+    },
+    idEmployeeFilter() {
+      return ['-'].concat(this.employees.map((item) => item.id_employee))
     }
   },
   methods: {
-    ...mapActions(useCheckEditorStore, ['getAll', 'getOne']),
+    ...mapActions(useEmployeeEditorStore, {
+      getAllEmployees: 'getAll'
+    }),
+    ...mapActions(useCheckEditorStore, [
+      'getAll',
+      'getOne',
+      'getAllWithinDates',
+      'getTotalSumWithinDates'
+    ]),
     async search() {
       let isOk: boolean
       isOk = await this.getAll(this.jwt_token)
@@ -116,6 +145,31 @@ export default {
     async findOneRequest(item: CheckDTO) {
       await this.getOne(this.jwt_token, item.check_number)
       this.isGetOneDialogOpen = true
+    },
+    async searchWithinDates() {
+      const fromParam = this.dateFrom.split('-').join('/')
+      const toParam = this.dateTo.split('-').join('/')
+      let isOk: boolean
+      isOk = await this.getAllWithinDates(
+        this.jwt_token,
+        fromParam,
+        toParam,
+        this.chosenIdEmployeeFilter
+      )
+      if (!isOk) alert('The error happened')
+    },
+    async sumWithinDatesRequest() {
+      const fromParam = this.dateFrom.split('-').join('/')
+      const toParam = this.dateTo.split('-').join('/')
+      let isOk: boolean
+      isOk = await this.getTotalSumWithinDates(
+        this.jwt_token,
+        fromParam,
+        toParam,
+        this.chosenIdEmployeeFilter
+      )
+      this.isGetStatisticsDialogOpen = true
+      if (!isOk) alert('The error happened')
     }
   }
 }
