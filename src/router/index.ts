@@ -41,6 +41,10 @@ const router = createRouter({
         {
           path: 'employee',
           component: () => import('../components/EmployeeEditor/EmployeeEditor.vue')
+        },
+        {
+          path: 'check',
+          component: () => import('../components/CheckEditor/CkeckEditor.vue')
         }
       ]
     },

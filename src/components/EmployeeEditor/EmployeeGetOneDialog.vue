@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isGetOneDialogOpen" width="400">
     <v-card>
-      <v-card-text> Update Customer Card </v-card-text>
+      <v-card-text>Customer Card</v-card-text>
       <v-card-item>
         <v-card-title v-if="checkIfChosenItemIsEmpty"
           >No Employee were found<br />
