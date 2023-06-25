@@ -24,34 +24,56 @@ const router = createRouter({
         },
         {
           path: 'category',
-          component: () => import('../components/CategoryEditor/CategoryEditor.vue')
+          component: () => import('../components/manager/CategoryEditor/CategoryEditor.vue')
         },
         {
           path: 'product',
-          component: () => import('../components/ProductEditor/ProductEditor.vue')
+          component: () => import('../components/manager/ProductEditor/ProductEditor.vue')
         },
         {
           path: 'store-product',
-          component: () => import('../components/StoreProductEditor/StoreProductEditor.vue')
+          component: () => import('../components/manager/StoreProductEditor/StoreProductEditor.vue')
         },
         {
           path: 'customer-card',
-          component: () => import('../components/CustomerCardEditor/CustomerCardEditor.vue')
+          component: () => import('../components/manager/CustomerCardEditor/CustomerCardEditor.vue')
         },
         {
           path: 'employee',
-          component: () => import('../components/EmployeeEditor/EmployeeEditor.vue')
+          component: () => import('../components/manager/EmployeeEditor/EmployeeEditor.vue')
         },
         {
           path: 'check',
-          component: () => import('../components/CheckEditor/CkeckEditor.vue')
+          component: () => import('../components/manager/CheckEditor/CkeckEditor.vue')
         }
       ]
     },
     {
       path: '/dashboard-cashier',
       name: 'Cashier - Dashboard',
-      component: () => import('../views/CashierDashboard.vue')
+      component: () => import('../views/CashierDashboard.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('../components/MyProfile.vue')
+        },
+        {
+          path: 'product',
+          component: () => import('../components/cashier/ProductEditor/ProductEditor.vue')
+        },
+        {
+          path: 'store-product',
+          component: () => import('../components/cashier/StoreProductEditor/StoreProductEditor.vue')
+        },
+        {
+          path: 'customer-card',
+          component: () => import('../components/cashier/CustomerCardEditor/CustomerCardEditor.vue')
+        },
+        {
+          path: 'check',
+          component: () => import('../components/cashier/CheckEditor/CkeckEditor.vue')
+        }
+      ]
     }
   ]
 })

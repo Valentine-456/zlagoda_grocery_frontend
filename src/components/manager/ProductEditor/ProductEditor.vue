@@ -55,7 +55,7 @@ import { mapActions, mapState, mapWritableState } from 'pinia'
 import { useProductEditorStore, type ProductDTO } from '@/stores/productEditor'
 import { useLoginStore } from '@/stores/login'
 import { useCategoryEditorStore } from '@/stores/categoryEditor'
-import ProductCreateDialog from '@/components/ProductEditor/ProductCreateDialog.vue'
+import ProductCreateDialog from './ProductCreateDialog.vue'
 import ProductDeleteDialog from './ProductDeleteDialog.vue'
 import ProductUpdateDialog from './ProductUpdateDialog.vue'
 

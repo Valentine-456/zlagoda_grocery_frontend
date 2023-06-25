@@ -1,34 +1,38 @@
 <template>
-  <div>
-    <h1>{{ message }}</h1>
-    <button @click="updateMessage">Update Message</button>
-  </div>
+  <v-card>
+    <v-layout class="d-flex">
+      <MenuCashierDashboard />
+      <v-main class="main d-flex bg-green-lighten-5 pa-0">
+        <RouterView />
+      </v-main>
+    </v-layout>
+  </v-card>
 </template>
 
 <script lang="ts">
+import MenuCashierDashboard from '@/components/MenuCashierDashboard.vue'
+import { RouterView } from 'vue-router'
+
 export default {
   data() {
-    return {
-      message: 'Cashier!'
-    }
+    return {}
   },
-  methods: {
-    updateMessage() {
-      this.message = 'Updated message!'
-    }
-  }
+  components: {
+    MenuCashierDashboard
+  },
+  methods: {}
 }
 </script>
 
 <style scoped>
-h1 {
-  color: blue;
-}
-button {
-  background-color: green;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
+.main {
+  height: 100vh;
+  width: calc(100vw - 256px);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 2;
 }
 </style>

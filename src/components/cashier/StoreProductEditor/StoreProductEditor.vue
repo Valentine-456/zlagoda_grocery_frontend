@@ -1,7 +1,4 @@
 <template>
-  <StoreProductCreateDialog />
-  <StoreProductDeleteDialog />
-  <StoreProductUpdateDialog />
   <StoreProductGetOneDialog />
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
@@ -33,7 +30,6 @@
           label="Promotion Filter"
         ></v-select>
         <v-btn @click="search" size="large" class="mb-5 mt-0 mx-5 bg-blue">Search</v-btn>
-        <v-btn @click="create" size="large" class="mb-5 mt-0 bg-green">Create New</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -46,7 +42,6 @@
           <th>Characteristics</th>
           <th>Promotional</th>
           <th>Price</th>
-          <th>Options</th>
         </tr>
       </thead>
       <tbody v-if="storeProducts.length != 0">
@@ -57,10 +52,6 @@
           <td>{{ item.charachteristics }}</td>
           <td>{{ item.promotional_product }}</td>
           <td>{{ item.selling_price }}</td>
-          <td>
-            <v-btn size="small" @click="updateRequest(item)" class="bg-orange">Update</v-btn>
-            <v-btn size="small" @click="deleteRequest(item)" class="bg-red">Delete</v-btn>
-          </td>
         </tr>
       </tbody>
     </v-table>
@@ -72,19 +63,11 @@ import { useProductEditorStore } from '@/stores/productEditor'
 import { useLoginStore } from '@/stores/login'
 import {
   useStoreProductEditorStore,
-  type StoreProductExtendedDTO,
-  type StoreProductDTO
 } from '@/stores/storeProductEditor'
-import StoreProductCreateDialog from '@/components/StoreProductEditor/StoreProductCreateDialog.vue'
-import StoreProductDeleteDialog from './StoreProductDeleteDialog.vue'
-import StoreProductUpdateDialog from './StoreProductUpdateDialog.vue'
 import StoreProductGetOneDialog from './StoreProductGetOneDialog.vue'
 
 export default {
   components: {
-    StoreProductCreateDialog,
-    StoreProductDeleteDialog,
-    StoreProductUpdateDialog,
     StoreProductGetOneDialog
   },
   mounted() {
@@ -101,10 +84,7 @@ export default {
   },
   computed: {
     ...mapWritableState(useStoreProductEditorStore, [
-      'isCreateDialogOpen',
       'chosenItem',
-      'isDeleteDialogOpen',
-      'isUpdateDialogOpen',
       'isGetOneDialogOpen'
     ]),
     ...mapState(useLoginStore, ['jwt_token']),
@@ -122,17 +102,6 @@ export default {
       let isOk: boolean
       isOk = await this.getAll(this.jwt_token, this.sortBy, this.promotionFilter)
       if (!isOk) alert('The error happened')
-    },
-    create() {
-      this.isCreateDialogOpen = true
-    },
-    deleteRequest(item: StoreProductExtendedDTO) {
-      this.chosenItem = item
-      this.isDeleteDialogOpen = true
-    },
-    updateRequest(item: StoreProductExtendedDTO) {
-      this.chosenItem = { ...item }
-      this.isUpdateDialogOpen = true
     },
     async findByUPCRequest() {
       await this.getOne(this.jwt_token, this.findByUPC)
