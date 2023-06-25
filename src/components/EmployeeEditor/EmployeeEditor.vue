@@ -2,9 +2,21 @@
   <EmployeeCreateDialog />
   <EmployeeDeleteDialog />
   <EmployeeUpdateDialog />
+  <EmployeeGetOneDialog />
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
       <v-card-title class="text-h4 font-weight-bold">Employee</v-card-title>
+      <v-card-action class="d-flex">
+        <v-text-field
+          v-model="findBySurname"
+          density="compact"
+          class="find-one"
+          label="Surname"
+        ></v-text-field>
+        <v-btn @click="findBySurnameRequest" size="large" class="mb-5 mt-0 mx-5 bg-blue"
+          >Search by Surname</v-btn
+        >
+      </v-card-action>
       <v-card-actions class="d-flex">
         <v-select
           v-model="sortBy"
@@ -18,7 +30,7 @@
           density="compact"
           class="sort-by"
           :items="roleFilterOptions"
-          label="Category Filter"
+          label="Role Filter"
         ></v-select>
         <v-btn @click="search" size="large" class="mb-5 mt-0 mx-5 bg-blue">Search</v-btn>
         <v-btn @click="create" size="large" class="mb-5 mt-0 bg-green">Create New</v-btn>
@@ -61,19 +73,22 @@ import { useEmployeeEditorStore, type EmployeeDTO } from '@/stores/employeeEdito
 import EmployeeCreateDialog from './EmployeeCreateDialog.vue'
 import EmployeeDeleteDialog from './EmployeeDeleteDialog.vue'
 import EmployeeUpdateDialog from './EmployeeUpdateDialog.vue'
+import EmployeeGetOneDialog from './EmployeeGetOneDialog.vue'
 
 export default {
   components: {
     EmployeeCreateDialog,
     EmployeeDeleteDialog,
-    EmployeeUpdateDialog
+    EmployeeUpdateDialog,
+    EmployeeGetOneDialog
   },
   data() {
     return {
       sortBy: '',
       sortOptions: ['empl_surname', 'salary', ''],
       roleFilterOptions: ['Any', 'MANAGER', 'CASHIER'],
-      roleFilter: 'Any'
+      roleFilter: 'Any',
+      findBySurname: ''
     }
   },
   computed: {
@@ -81,7 +96,8 @@ export default {
       'isCreateDialogOpen',
       'chosenItem',
       'isDeleteDialogOpen',
-      'isUpdateDialogOpen'
+      'isUpdateDialogOpen',
+      'isGetOneDialogOpen'
     ]),
     ...mapState(useEmployeeEditorStore, ['employees']),
     ...mapState(useLoginStore, ['jwt_token']),
@@ -90,7 +106,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useEmployeeEditorStore, ['getAll']),
+    ...mapActions(useEmployeeEditorStore, ['getAll', 'GetOneBySurname']),
     async search() {
       let isOk: boolean
       isOk = await this.getAll(this.jwt_token, this.sortBy, this.roleFilter)
@@ -106,6 +122,10 @@ export default {
     updateRequest(item: EmployeeDTO) {
       this.chosenItem = { ...item }
       this.isUpdateDialogOpen = true
+    },
+    async findBySurnameRequest() {
+      await this.GetOneBySurname(this.jwt_token, this.findBySurname)
+      this.isGetOneDialogOpen = true
     }
   }
 }
@@ -121,5 +141,11 @@ export default {
 .sort-by {
   max-width: 300px;
   margin-right: 20px;
+}
+
+.find-one {
+  max-width: 300px;
+  margin-right: 20px;
+  margin-left: 8px;
 }
 </style>

@@ -21,6 +21,7 @@ export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
     isCreateDialogOpen: false,
     isDeleteDialogOpen: false,
     isUpdateDialogOpen: false,
+    isGetOneDialogOpen: false,
     chosenItem: {} as EmployeeDTO,
     employees: [] as Array<EmployeeDTO>
   }),
@@ -109,6 +110,26 @@ export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
           } as EmployeeDTO)
         })
         if (response.ok) {
+          return true
+        }
+        return false
+      } catch (error) {
+        console.error('Error:', error)
+        return false
+      }
+    },
+    async GetOneBySurname(jwt_token: string, surname: string): Promise<boolean> {
+      const url = `http://127.0.0.1:3000/employee/searchBySurname/${surname}`
+      console.log(url)
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${jwt_token}`
+          }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          this.chosenItem = data[0] || {}
           return true
         }
         return false

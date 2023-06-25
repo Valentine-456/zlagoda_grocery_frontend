@@ -2,9 +2,21 @@
   <StoreProductCreateDialog />
   <StoreProductDeleteDialog />
   <StoreProductUpdateDialog />
+  <StoreProductGetOneDialog />
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
       <v-card-title class="text-h4 font-weight-bold">Store Product</v-card-title>
+      <v-card-action class="d-flex">
+        <v-text-field
+          v-model="findByUPC"
+          density="compact"
+          class="find-one"
+          label="UPC code"
+        ></v-text-field>
+        <v-btn @click="findByUPCRequest" size="large" class="mb-5 mt-0 mx-5 bg-blue"
+          >Search by UPC</v-btn
+        >
+      </v-card-action>
       <v-card-actions class="d-flex">
         <v-select
           v-model="sortBy"
@@ -12,6 +24,13 @@
           class="sort-by"
           :items="sortOptions"
           label="Sort By"
+        ></v-select>
+        <v-select
+          v-model="promotionFilter"
+          density="compact"
+          class="sort-by"
+          :items="promotionFilterOptions"
+          label="Promotion Filter"
         ></v-select>
         <v-btn @click="search" size="large" class="mb-5 mt-0 mx-5 bg-blue">Search</v-btn>
         <v-btn @click="create" size="large" class="mb-5 mt-0 bg-green">Create New</v-btn>
@@ -59,20 +78,25 @@ import {
 import StoreProductCreateDialog from '@/components/StoreProductEditor/StoreProductCreateDialog.vue'
 import StoreProductDeleteDialog from './StoreProductDeleteDialog.vue'
 import StoreProductUpdateDialog from './StoreProductUpdateDialog.vue'
+import StoreProductGetOneDialog from './StoreProductGetOneDialog.vue'
 
 export default {
   components: {
     StoreProductCreateDialog,
     StoreProductDeleteDialog,
-    StoreProductUpdateDialog
+    StoreProductUpdateDialog,
+    StoreProductGetOneDialog
   },
   mounted() {
     this.getAllProducts(this.jwt_token, 'product_name')
   },
   data() {
     return {
+      findByUPC: '',
       sortBy: '',
-      sortOptions: ['products_nubmer', 'product_name', 'selling_price', '']
+      sortOptions: ['products_nubmer', 'product_name', 'selling_price', ''],
+      promotionFilter: 'Any',
+      promotionFilterOptions: ['promotional', 'nonpromotional', 'Any']
     }
   },
   computed: {
@@ -80,7 +104,8 @@ export default {
       'isCreateDialogOpen',
       'chosenItem',
       'isDeleteDialogOpen',
-      'isUpdateDialogOpen'
+      'isUpdateDialogOpen',
+      'isGetOneDialogOpen'
     ]),
     ...mapState(useLoginStore, ['jwt_token']),
     ...mapState(useStoreProductEditorStore, ['storeProducts']),
@@ -89,13 +114,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useStoreProductEditorStore, ['getAll']),
+    ...mapActions(useStoreProductEditorStore, ['getAll', 'getOne']),
     ...mapActions(useProductEditorStore, {
       getAllProducts: 'getAll'
     }),
     async search() {
       let isOk: boolean
-      isOk = await this.getAll(this.jwt_token, this.sortBy)
+      isOk = await this.getAll(this.jwt_token, this.sortBy, this.promotionFilter)
       if (!isOk) alert('The error happened')
     },
     create() {
@@ -108,6 +133,10 @@ export default {
     updateRequest(item: StoreProductExtendedDTO) {
       this.chosenItem = { ...item }
       this.isUpdateDialogOpen = true
+    },
+    async findByUPCRequest() {
+      await this.getOne(this.jwt_token, this.findByUPC)
+      this.isGetOneDialogOpen = true
     }
   }
 }
@@ -123,5 +152,11 @@ export default {
 .sort-by {
   max-width: 300px;
   margin-right: 20px;
+}
+
+.find-one {
+  max-width: 300px;
+  margin-right: 20px;
+  margin-left: 8px;
 }
 </style>

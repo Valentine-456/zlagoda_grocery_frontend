@@ -19,13 +19,21 @@ export const useStoreProductEditorStore = defineStore('storeProductEditorStore',
     isCreateDialogOpen: false,
     isDeleteDialogOpen: false,
     isUpdateDialogOpen: false,
+    isGetOneDialogOpen: false,
     chosenItem: {} as StoreProductExtendedDTO,
     storeProducts: [] as Array<StoreProductExtendedDTO>
   }),
   getters: {},
   actions: {
-    async getAll(jwt_token: string, sort: string): Promise<boolean> {
+    async getAll(
+      jwt_token: string,
+      sort: string,
+      promotionFilter: string = 'Any'
+    ): Promise<boolean> {
       let url = 'http://127.0.0.1:3000/store-product'
+      if (promotionFilter != 'Any') {
+        url += `/${promotionFilter}`
+      }
       if (sort.length > 0) {
         url += `?sortBy=${sort}`
       }
@@ -107,6 +115,29 @@ export const useStoreProductEditorStore = defineStore('storeProductEditorStore',
           } as StoreProductExtendedDTO)
         })
         if (response.ok) {
+          return true
+        }
+        return false
+      } catch (error) {
+        console.error('Error:', error)
+        return false
+      }
+    },
+    async getOne(jwt_token: string, upc: string): Promise<boolean> {
+      const url = `http://127.0.0.1:3000/store-product/${upc}`
+      console.log(url)
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${jwt_token}`
+          }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          this.chosenItem = {
+            ...data,
+            selling_price: parseFloat(data.selling_price.toString())
+          }
           return true
         }
         return false
