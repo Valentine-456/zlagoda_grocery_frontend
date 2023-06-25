@@ -4,6 +4,17 @@
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
       <v-card-title class="text-h4 font-weight-bold">Customer Card</v-card-title>
+      <v-card-action class="d-flex">
+        <v-text-field
+          v-model="customerSurname"
+          density="compact"
+          class="sort-by ml-2"
+          label="Customer surname"
+        ></v-text-field>
+        <v-btn @click="searchBySurnameRequest" size="large" class="mb-5 mt-0 bg-blue"
+          >Search by customer's surname</v-btn
+        >
+      </v-card-action>
       <v-card-actions class="d-flex">
         <v-select
           v-model="sortBy"
@@ -58,7 +69,8 @@ export default {
   data() {
     return {
       sortBy: '',
-      sortOptions: ['cust_surname', 'percent', '']
+      sortOptions: ['cust_surname', 'percent', ''],
+      customerSurname: ''
     }
   },
   computed: {
@@ -74,7 +86,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useCustomerCardEditorStore, ['getAll']),
+    ...mapActions(useCustomerCardEditorStore, ['getAll', 'getAllBySurname']),
     async search() {
       let isOk: boolean
       isOk = await this.getAll(this.jwt_token, this.sortBy)
@@ -86,6 +98,11 @@ export default {
     updateRequest(item: CustomerCardDTO) {
       this.chosenItem = { ...item }
       this.isUpdateDialogOpen = true
+    },
+    async searchBySurnameRequest() {
+      let isOk: boolean
+      isOk = await this.getAllBySurname(this.jwt_token, this.customerSurname)
+      if (!isOk) alert('The error happened')
     }
   }
 }

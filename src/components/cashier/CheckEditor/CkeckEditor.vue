@@ -1,4 +1,5 @@
 <template>
+  <CheckCreateDialog />
   <CheckGetTotalSumDialog />
   <CheckGetOneDialog />
   <div class="editor-block v-container pa-5">
@@ -8,30 +9,28 @@
         <!-- <v-expansion-panels class="my-5">
           <v-expansion-panel title="Advanced search">
             <v-expansion-panel-text class="advance-search-bar"> -->
-              <div class="d-flex">
-                <v-text-field
-                  v-model="dateFrom"
-                  class="sort-by ml-2"
-                  label="Start date"
-                  type="date"
-                ></v-text-field>
-                <v-text-field
-                  v-model="dateTo"
-                  class="sort-by"
-                  label="End date"
-                  type="date"
-                ></v-text-field>
-              </div>
-              
-            <!-- </v-expansion-panel-text>
+        <div class="d-flex">
+          <v-text-field
+            v-model="dateFrom"
+            class="sort-by ml-2"
+            label="Start date"
+            type="date"
+          ></v-text-field>
+          <v-text-field
+            v-model="dateTo"
+            class="sort-by"
+            label="End date"
+            type="date"
+          ></v-text-field>
+        </div>
+
+        <!-- </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels> -->
       </v-card-action>
       <v-card-actions class="d-flex">
-        <v-btn size="large" @click="searchWithinDates" class="mb-5 mt-0 mr-5 bg-blue"
-                >Search</v-btn
-              >
-        <v-btn @click="search" size="large" class="mb-5 mt-0 mx-5 bg-success">Add new</v-btn>
+        <v-btn size="large" @click="searchWithinDates" class="mb-5 mt-0 mr-5 bg-blue">Search</v-btn>
+        <v-btn @click="create" size="large" class="mb-5 mt-0 mx-5 bg-success">Add new</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -69,12 +68,18 @@ import { useLoginStore } from '@/stores/login'
 import { useCheckEditorStore, type CheckDTO } from '@/stores/checkEditor'
 import CheckGetTotalSumDialog from './CheckGetTotalSumDialog.vue'
 import CheckGetOneDialog from './CheckGetOneDialog.vue'
+import CheckCreateDialog from './CheckCreateDialog.vue'
+import { useStoreProductEditorStore } from '@/stores/storeProductEditor'
 import { useEmployeeEditorStore } from '@/stores/employeeEditor'
 
 export default {
   components: {
     CheckGetTotalSumDialog,
-    CheckGetOneDialog
+    CheckGetOneDialog,
+    CheckCreateDialog
+  },
+  mounted() {
+    this.getAllStoreProducts(this.jwt_token, '')
   },
   data() {
     return {
@@ -94,7 +99,8 @@ export default {
     ...mapWritableState(useCheckEditorStore, [
       'chosenItem',
       'isGetOneDialogOpen',
-      'isGetStatisticsDialogOpen'
+      'isGetStatisticsDialogOpen',
+      'isCreateDialogOpen'
     ]),
     ...mapState(useCheckEditorStore, ['checks']),
     ...mapState(useLoginStore, ['jwt_token', 'id_employee']),
@@ -102,20 +108,22 @@ export default {
     tableHeight() {
       return window.innerHeight * 0.5
     },
-    chosenIdEmployeeFilter () {
+    chosenIdEmployeeFilter() {
       return this.id_employee
     }
   },
   methods: {
-    ...mapActions(useCheckEditorStore, [
-      'getAll',
-      'getOne',
-      'getAllWithinDates',
-    ]),
-    async search() {
-      let isOk: boolean
-      isOk = await this.getAll(this.jwt_token)
-      if (!isOk) alert('The error happened')
+    ...mapActions(useCheckEditorStore, ['getAll', 'getOne', 'getAllWithinDates']),
+    ...mapActions(useStoreProductEditorStore, {
+      getAllStoreProducts: 'getAll'
+    }),
+    // async search() {
+    //   let isOk: boolean
+    //   isOk = await this.getAll(this.jwt_token)
+    //   if (!isOk) alert('The error happened')
+    // },
+    create() {
+      this.isCreateDialogOpen = true
     },
     async findOneRequest(item: CheckDTO) {
       await this.getOne(this.jwt_token, item.check_number)
@@ -132,7 +140,7 @@ export default {
         this.chosenIdEmployeeFilter
       )
       if (!isOk) alert('The error happened')
-    },
+    }
   }
 }
 </script>

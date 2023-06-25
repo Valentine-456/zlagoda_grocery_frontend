@@ -56,9 +56,8 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
         return false
       }
     },
-    // TODO: create method
-    async create(jwt_token: string, product: CheckExtendedDTO): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/product'
+    async create(jwt_token: string, check: CheckExtendedDTO): Promise<boolean> {
+      const url = 'http://127.0.0.1:3000/check'
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -66,7 +65,13 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwt_token}`
           },
-          body: JSON.stringify(product)
+          body: JSON.stringify({
+            ...check,
+            sales: check.sales.map((el) => ({
+              ...el,
+              UPC: el.upc
+            }))
+          })
         })
         if (response.ok) {
           return true

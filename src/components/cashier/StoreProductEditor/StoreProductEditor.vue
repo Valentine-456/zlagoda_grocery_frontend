@@ -61,9 +61,7 @@
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { useProductEditorStore } from '@/stores/productEditor'
 import { useLoginStore } from '@/stores/login'
-import {
-  useStoreProductEditorStore,
-} from '@/stores/storeProductEditor'
+import { useStoreProductEditorStore } from '@/stores/storeProductEditor'
 import StoreProductGetOneDialog from './StoreProductGetOneDialog.vue'
 
 export default {
@@ -83,10 +81,7 @@ export default {
     }
   },
   computed: {
-    ...mapWritableState(useStoreProductEditorStore, [
-      'chosenItem',
-      'isGetOneDialogOpen'
-    ]),
+    ...mapWritableState(useStoreProductEditorStore, ['chosenItem', 'isGetOneDialogOpen']),
     ...mapState(useLoginStore, ['jwt_token']),
     ...mapState(useStoreProductEditorStore, ['storeProducts']),
     tableHeight() {

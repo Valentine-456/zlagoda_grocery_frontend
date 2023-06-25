@@ -5,6 +5,17 @@
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
       <v-card-title class="text-h4 font-weight-bold">Product</v-card-title>
+      <v-card-action class="d-flex">
+        <v-text-field
+          v-model="productNamePrefix"
+          density="compact"
+          class="sort-by ml-2"
+          label="Product name"
+        ></v-text-field>
+        <v-btn @click="searchByProductNameRequest" size="large" class="mb-5 mt-0 bg-blue"
+          >Search by product name</v-btn
+        >
+      </v-card-action>
       <v-card-actions class="d-flex">
         <v-select
           v-model="sortBy"
@@ -44,7 +55,7 @@
   </div>
 </template>
 <script lang="ts">
-import { mapActions, mapState, mapWritableState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { useProductEditorStore, type ProductDTO } from '@/stores/productEditor'
 import { useLoginStore } from '@/stores/login'
 
@@ -54,7 +65,8 @@ export default {
     return {
       sortBy: '',
       sortOptions: ['category_name', 'product_name', ''],
-      categoryFilter: ''
+      categoryFilter: '',
+      productNamePrefix: ''
     }
   },
   computed: {
@@ -62,15 +74,20 @@ export default {
     ...mapState(useLoginStore, ['jwt_token']),
     tableHeight() {
       return window.innerHeight * 0.5
-    },
+    }
   },
   methods: {
-    ...mapActions(useProductEditorStore, ['getAll']),
+    ...mapActions(useProductEditorStore, ['getAll', 'getAllByProductName']),
     async search() {
       let isOk: boolean
       isOk = await this.getAll(this.jwt_token, this.sortBy, this.categoryFilter.trim() || 'Any')
       if (!isOk) alert('The error happened')
     },
+    async searchByProductNameRequest() {
+      let isOk: boolean
+      isOk = await this.getAllByProductName(this.jwt_token, this.productNamePrefix)
+      if (!isOk) alert('The error happened')
+    }
   }
 }
 </script>
