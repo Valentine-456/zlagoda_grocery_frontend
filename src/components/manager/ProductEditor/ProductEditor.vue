@@ -5,6 +5,21 @@
   <div class="editor-block v-container pa-5">
     <v-card class="mb-5">
       <v-card-title class="text-h4 font-weight-bold">Product</v-card-title>
+      <v-card-action class="d-flex">
+        <v-expansion-panels class="my-5">
+          <v-expansion-panel title="Statistics">
+            <v-expansion-panel-text class="advance-search-bar">
+              <v-btn
+                size="large"
+                @click="searchMultiplePropositionsProducts"
+                class="mb-5 mt-0 mx-5 bg-blue"
+                >Get products with<br />
+                multiple propositions</v-btn
+              >
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-card-action>
       <v-card-actions class="d-flex">
         <v-select
           v-model="sortBy"
@@ -93,7 +108,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useProductEditorStore, ['getAll']),
+    ...mapActions(useProductEditorStore, ['getAll', 'getMultiplePropositionsProducts']),
     ...mapActions(useCategoryEditorStore, {
       getAllCategories: 'getAll'
     }),
@@ -112,6 +127,15 @@ export default {
     updateRequest(item: ProductDTO) {
       this.chosenItem = { ...item }
       this.isUpdateDialogOpen = true
+    },
+    async searchMultiplePropositionsProducts() {
+      let isOk: boolean
+      isOk = await this.getMultiplePropositionsProducts(
+        this.jwt_token,
+        this.sortBy,
+        this.categoryFilter
+      )
+      if (!isOk) alert('The error happened')
     }
   }
 }

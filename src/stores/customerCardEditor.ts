@@ -133,6 +133,29 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
         console.error('Error:', error)
         return false
       }
+    },
+    async getActiveCustomers(jwt_token: string): Promise<boolean> {
+      const url = 'http://127.0.0.1:3000/customer-card/statistics/activeCustomers'
+      console.log(url)
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${jwt_token}`
+          }
+        })
+        if (response.ok) {
+          const data: Array<CustomerCardDTO> = await response.json()
+          this.customerCards = data.map((item) => ({
+            ...item,
+            card_numberParameter: item.card_number
+          }))
+          return true
+        }
+        return false
+      } catch (error) {
+        console.error('Error:', error)
+        return false
+      }
     }
   }
 })

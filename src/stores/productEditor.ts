@@ -126,6 +126,36 @@ export const useProductEditorStore = defineStore('productEditorStore', {
         console.error('Error:', error)
         return false
       }
+    },
+    async getMultiplePropositionsProducts(
+      jwt_token: string,
+      sort: string,
+      categoryFilter: string = 'Any'
+    ): Promise<boolean> {
+      let url = 'http://127.0.0.1:3000/product/statistics/multiplePropositions?'
+      if (sort.length > 0) {
+        url += `sortBy=${sort}`
+      }
+      if (categoryFilter != 'Any') {
+        url += `&category=${encodeURIComponent(categoryFilter)}`
+      }
+      console.log(url)
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${jwt_token}`
+          }
+        })
+        if (response.ok) {
+          const data: Array<ProductDTO> = await response.json()
+          this.products = data
+          return true
+        }
+        return false
+      } catch (error) {
+        console.error('Error:', error)
+        return false
+      }
     }
   }
 })

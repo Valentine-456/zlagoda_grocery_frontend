@@ -25,8 +25,9 @@ export default {
 
         <v-card-text class="text-subtitle-1">
           Welcome to 'Zlagoda' grocery admin panel. <br />
-          If you want login as a manager of the shop
-          <RouterLink to="/login-manager">click here</RouterLink>.
+          It is designed to assist in managing various aspects of a shop, such as inventory, sales,
+          customer information, and order tracking. <br />
+          To login, please eneter your ID and password.
         </v-card-text>
       </v-card>
     </div>
@@ -52,7 +53,7 @@ main {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-20%, -80%);
+  transform: translate(-20%, -70%);
 }
 
 .sheet-block {
