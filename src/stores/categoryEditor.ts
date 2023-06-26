@@ -16,7 +16,7 @@ export const useCategoryEditorStore = defineStore('categoryEditorStore', {
   getters: {},
   actions: {
     async getAll(jwt_token: string, sort: string): Promise<boolean> {
-      let url = 'http://127.0.0.1:3000/category'
+      let url = '/category'
       if (sort.length > 0) {
         url += `?sortBy=${sort}`
       }
@@ -39,7 +39,7 @@ export const useCategoryEditorStore = defineStore('categoryEditorStore', {
       }
     },
     async create(jwt_token: string, category_name: string): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/category'
+      const url = '/category'
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -59,7 +59,7 @@ export const useCategoryEditorStore = defineStore('categoryEditorStore', {
       }
     },
     async delete(jwt_token: string, category_number: number): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/category/${category_number}`
+      const url = `/category/${category_number}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -78,7 +78,7 @@ export const useCategoryEditorStore = defineStore('categoryEditorStore', {
       }
     },
     async update(jwt_token: string, category: CategoryDTO): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/category/${category.category_number}`
+      const url = `/category/${category.category_number}`
       try {
         const response = await fetch(url, {
           method: 'PATCH',

@@ -28,7 +28,7 @@ export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
   getters: {},
   actions: {
     async getAll(jwt_token: string, sort: string, roleFilter: string = 'Any'): Promise<boolean> {
-      let url = 'http://127.0.0.1:3000/employee'
+      let url = '/employee'
       if (roleFilter != 'Any') {
         url += `/position/${roleFilter}`
       }
@@ -57,7 +57,7 @@ export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
       }
     },
     async create(jwt_token: string, employee: EmployeeDTO): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/employee'
+      const url = '/employee'
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -77,7 +77,7 @@ export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
       }
     },
     async delete(jwt_token: string, id_employee: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/employee/${id_employee}`
+      const url = `/employee/${id_employee}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -96,7 +96,7 @@ export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
       }
     },
     async update(jwt_token: string, employee: EmployeeDTO): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/employee/${employee.id_employee}`
+      const url = `/employee/${employee.id_employee}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -119,7 +119,7 @@ export const useEmployeeEditorStore = defineStore('employeeEditorStore', {
       }
     },
     async GetOneBySurname(jwt_token: string, surname: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/employee/searchBySurname/${surname}`
+      const url = `/employee/searchBySurname/${surname}`
       console.log(url)
       try {
         const response = await fetch(url, {

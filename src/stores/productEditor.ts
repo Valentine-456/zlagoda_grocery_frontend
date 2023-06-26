@@ -23,7 +23,7 @@ export const useProductEditorStore = defineStore('productEditorStore', {
       sort: string,
       categoryFilter: string = 'Any'
     ): Promise<boolean> {
-      let url = 'http://127.0.0.1:3000/product?'
+      let url = '/product?'
       if (sort.length > 0) {
         url += `sortBy=${sort}`
       }
@@ -49,7 +49,7 @@ export const useProductEditorStore = defineStore('productEditorStore', {
       }
     },
     async create(jwt_token: string, product: ProductDTO): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/product'
+      const url = '/product'
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -69,7 +69,7 @@ export const useProductEditorStore = defineStore('productEditorStore', {
       }
     },
     async delete(jwt_token: string, id_product: number): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/product/${id_product}`
+      const url = `/product/${id_product}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -88,7 +88,7 @@ export const useProductEditorStore = defineStore('productEditorStore', {
       }
     },
     async update(jwt_token: string, product: ProductDTO): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/product/${product.id_product}`
+      const url = `/product/${product.id_product}`
       try {
         const response = await fetch(url, {
           method: 'PATCH',
@@ -108,7 +108,7 @@ export const useProductEditorStore = defineStore('productEditorStore', {
       }
     },
     async getAllByProductName(jwt_token: string, productNamePrefix: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/product/searchByName/${productNamePrefix}`
+      const url = `/product/searchByName/${productNamePrefix}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -132,7 +132,7 @@ export const useProductEditorStore = defineStore('productEditorStore', {
       sort: string,
       categoryFilter: string = 'Any'
     ): Promise<boolean> {
-      let url = 'http://127.0.0.1:3000/product/statistics/multiplePropositions?'
+      let url = '/product/statistics/multiplePropositions?'
       if (sort.length > 0) {
         url += `sortBy=${sort}`
       }

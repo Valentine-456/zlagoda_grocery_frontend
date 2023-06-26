@@ -30,7 +30,7 @@ export const useStoreProductEditorStore = defineStore('storeProductEditorStore',
       sort: string,
       promotionFilter: string = 'Any'
     ): Promise<boolean> {
-      let url = 'http://127.0.0.1:3000/store-product'
+      let url = '/store-product'
       if (promotionFilter != 'Any') {
         url += `/${promotionFilter}`
       }
@@ -60,7 +60,7 @@ export const useStoreProductEditorStore = defineStore('storeProductEditorStore',
       }
     },
     async create(jwt_token: string, storeProduct: StoreProductDTO): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/store-product'
+      const url = '/store-product'
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -80,7 +80,7 @@ export const useStoreProductEditorStore = defineStore('storeProductEditorStore',
       }
     },
     async delete(jwt_token: string, upc: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/store-product/${upc}`
+      const url = `/store-product/${upc}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -99,7 +99,7 @@ export const useStoreProductEditorStore = defineStore('storeProductEditorStore',
       }
     },
     async update(jwt_token: string, storeProduct: StoreProductExtendedDTO): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/store-product/${storeProduct.UPC}`
+      const url = `/store-product/${storeProduct.UPC}`
       console.log(url)
       console.log(storeProduct)
       try {
@@ -124,7 +124,7 @@ export const useStoreProductEditorStore = defineStore('storeProductEditorStore',
       }
     },
     async getOne(jwt_token: string, upc: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/store-product/${upc}`
+      const url = `/store-product/${upc}`
       console.log(url)
       try {
         const response = await fetch(url, {

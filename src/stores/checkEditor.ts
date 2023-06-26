@@ -33,7 +33,7 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
   getters: {},
   actions: {
     async getAll(jwt_token: string): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/check?sortBy=-print_date'
+      const url = '/check?sortBy=-print_date'
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -57,7 +57,7 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
       }
     },
     async create(jwt_token: string, check: CheckExtendedDTO): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/check'
+      const url = '/check'
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -83,7 +83,7 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
       }
     },
     async delete(jwt_token: string, check_number: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/check/${check_number}`
+      const url = `/check/${check_number}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -102,7 +102,7 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
       }
     },
     async getOne(jwt_token: string, check_number: string) {
-      const url = `http://127.0.0.1:3000/check/${check_number}`
+      const url = `/check/${check_number}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -135,7 +135,7 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
       toDate: string,
       employeeFilter: string = '-'
     ) {
-      let url = 'http://127.0.0.1:3000/check/within'
+      let url = '/check/within'
       if (employeeFilter != '-') {
         url += `/${employeeFilter}`
       }
@@ -168,7 +168,7 @@ export const useCheckEditorStore = defineStore('checkEditorStore', {
       toDate: string,
       employeeFilter: string = '-'
     ) {
-      let url = 'http://127.0.0.1:3000/check/sum/within'
+      let url = '/check/sum/within'
       if (employeeFilter != '-') {
         url += `/${employeeFilter}`
       }

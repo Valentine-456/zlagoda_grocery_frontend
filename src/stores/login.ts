@@ -54,7 +54,7 @@ export const useLoginStore = defineStore('loginStore', {
       }
     },
     async getMyProfile(id_employee: string): Promise<boolean> {
-      const url = `http://localhost:3000/employee/${this.id_employee}`
+      const url = `/employee/${this.id_employee}`
       try {
         const response = await fetch(url, {
           method: 'GET',

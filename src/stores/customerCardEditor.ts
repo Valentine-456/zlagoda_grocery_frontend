@@ -24,7 +24,7 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
   getters: {},
   actions: {
     async getAll(jwt_token: string, sort: string): Promise<boolean> {
-      let url = 'http://127.0.0.1:3000/customer-card'
+      let url = '/customer-card'
       if (sort.length > 0) {
         url += `?sortBy=${sort}`
       }
@@ -70,7 +70,7 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
       }
     },
     async delete(jwt_token: string, cardNumber: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/customer-card/${cardNumber}`
+      const url = `/customer-card/${cardNumber}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -89,7 +89,7 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
       }
     },
     async update(jwt_token: string, customerCard: CustomerCardDTO): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/customer-card/${customerCard.card_numberParameter}`
+      const url = `/customer-card/${customerCard.card_numberParameter}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -112,7 +112,7 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
       }
     },
     async getAllBySurname(jwt_token: string, surname: string): Promise<boolean> {
-      const url = `http://127.0.0.1:3000/customer-card/searchBySurname/${surname}`
+      const url = `/customer-card/searchBySurname/${surname}`
       console.log(url)
       try {
         const response = await fetch(url, {
@@ -135,7 +135,7 @@ export const useCustomerCardEditorStore = defineStore('customerCardEditorStore',
       }
     },
     async getActiveCustomers(jwt_token: string): Promise<boolean> {
-      const url = 'http://127.0.0.1:3000/customer-card/statistics/activeCustomers'
+      const url = '/customer-card/statistics/activeCustomers'
       console.log(url)
       try {
         const response = await fetch(url, {
